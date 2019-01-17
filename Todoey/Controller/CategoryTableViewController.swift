@@ -15,6 +15,8 @@ class CategoryTableViewController: UITableViewController {
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
+    
+    //MARK: -  View Did Load
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -22,6 +24,7 @@ class CategoryTableViewController: UITableViewController {
         
     }
 
+    
     //MARK: - Table View Datasource Methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return categories.count
@@ -39,11 +42,26 @@ class CategoryTableViewController: UITableViewController {
     }
     
     
+    //MARK: - Table View Delegate Methods
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "goToItems", sender: self)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destinationVC = segue.destination as! TodoListViewController
+        
+        if let indexPath = tableView.indexPathForSelectedRow {
+        destinationVC.selectedCategory = categories[indexPath.row]
+        }
+        
+    }
+    
     
     //MARK: - Data Manipulation Methods
     
     func loadCategories(){
-        // load and reload
+
         let request: NSFetchRequest<Category> = Category.fetchRequest()
         
         do{
@@ -67,7 +85,10 @@ class CategoryTableViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    //MARK: - Add New Categories
+    
+    //MARK: - IBActions
+    
+    // Add New Categories
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
